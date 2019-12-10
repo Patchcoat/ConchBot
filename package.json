@@ -1,0 +1,14 @@
+{
+    "name": "Conch",
+    "description": "Hand Raising App",
+    "version": "0.0.0",
+    "main":"index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "discord.js": "^11.1.0",
+        "request":"^2.81.0"
+    },
+    "licence":"MIT"
+}
