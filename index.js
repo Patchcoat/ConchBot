@@ -122,7 +122,7 @@ client.on('message', msg => {
         var noCtrl = /.*giveing up control.*/i
         if (msg.user.id == '219719949462011904') {
             if (ctrl.test(msg.content)) {
-                admin = msg.user.id;
+                admin = msg.member.user.id;
                 msg.reply("You now have full control");
             } else if (noCtrl.test(msg.content)) {
                 admin = "";
