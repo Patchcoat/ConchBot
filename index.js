@@ -4,7 +4,7 @@ const client = new Discord.Client();
 const auth = process.env.ACCESS_TOKEN;
 const accDenMsg = "You're not cleared for that";
 const helpText = "\n.rh to raise your hand\n.lh to lower your hand\n.show to show the current queue\n.clear to clear the queue (GM only)";
-var queue = [];
+var queue = new Map();
 var admin = '';
 const ActionEnum = Object.freeze({
     "help":1,
@@ -19,14 +19,14 @@ client.on('ready', () => {
     console.log(`logged in as ${client.user.tag}!`);
 });
 
-function queueToString (queue) {
-    if (queue.length == 0) {
+function queueToString (queue, id) {
+    if (queue.get(id).length == 0) {
         return "Empty Queue";
     }
     var queueString = "";
-    for (var i = 0; i < queue.length; i++) {
-        queueString += queue[i].username;
-        if (i < queue.length-1) {
+    for (var i = 0; i < queue.get(id).length; i++) {
+        queueString += queue.get(id)[i].username;
+        if (i < queue.get(id).length-1) {
             queueString += ", ";
         }
     }
@@ -34,9 +34,14 @@ function queueToString (queue) {
 }
 
 client.on('message', msg => {
-    const channel = client.channels.get(msg.channel.id);
+    const chID = msg.channel.id;
+    const channel = client.channels.get(chID);
     const GM = msg.guild.roles.find(val => val.name === "GM");
     let action;
+    // handle the queue
+    if (queue.get(chID)) {
+        queue.set(chID, []);
+    }
     // Assign Actions
     switch(msg.content) {
         case '.h':
@@ -73,29 +78,29 @@ client.on('message', msg => {
             msg.reply(helpText);
             break;
         case ActionEnum.raise:
-            if (!queue.includes(msg.author)) {
-                queue.push(msg.author);
+            if (!queue.get(chID).includes(msg.author)) {
+                queue.get(chID).push(msg.author);
             }
-            channel.send(queueToString(queue));
+            channel.send(queueToString(queue, chID));
             break;
         case ActionEnum.lower:
-            var index = queue.indexOf(msg.author);
+            var index = queue.get(chID).indexOf(msg.author);
             if (index > -1) {
-                queue.splice(index, 1);
+                queue.get(chID).splice(index, 1);
             }
-            channel.send(queueToString(queue));
+            channel.send(queueToString(queue, chID));
             break;
         case ActionEnum.show:
             if (msg.member._roles.indexOf(GM.id) > -1) {
-                channel.send(queueToString(queue));
+                channel.send(queueToString(queue, chID));
             } else {
-                channel.send(GM.toString()+" "+queueToString(queue));
+                channel.send(GM.toString()+" "+queueToString(queue, chID));
             }
             break;
         case ActionEnum.clear:
             if (msg.member._roles.indexOf(GM.id) > -1 || msg.member.user.id == admin) {
-                queue = [];
-                channel.send(queueToString(queue));
+                queue.get(chID) = [];
+                channel.send(queueToString(queue, chID));
             } else {
                 msg.reply(accDenMsg);
             }
@@ -119,7 +124,7 @@ client.on('message', msg => {
         }
         var good = /.*good bot.?/i
         if (good.test(msg.content)) {
-            msg.reply("(　＾∇＾)");
+            channel.send("(　＾∇＾)");
         }
         var littleS = /.*now listen here you little.*/i
         if (littleS.test(msg.content)) {
@@ -135,6 +140,7 @@ client.on('message', msg => {
         }
         var ctrl = /.*assuming direct control.*/i
         var noCtrl = /.*giving up control.*/i
+        var nuke = /.*tactical nuke.*/i
         if (msg.member.user.id == '219719949462011904') {
             if (ctrl.test(msg.content)) {
                 admin = msg.member.user.id;
@@ -142,6 +148,9 @@ client.on('message', msg => {
             } else if (noCtrl.test(msg.content)) {
                 admin = "";
                 msg.reply("You are no longer in control");
+            } else if (nuke.test(msg.content) && msg.member.user.id == admin) {
+                queue = new Map();
+                channel.send("It is done.");
             }
         } else {
             msg.reply(accDenMsg);
