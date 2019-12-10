@@ -117,6 +117,22 @@ client.on('message', msg => {
         if (patt.test(msg.content)) {
             msg.reply("You're welcome.");
         }
+        var good = /.*good bot.?/i
+        if (good.test(msg.content)) {
+            msg.reply("(　＾∇＾)");
+        }
+        var littleS = /.*now listen here you little.*/i
+        if (littleS.test(msg.content)) {
+            if (msg.member._roles.indexOf(GM.id) > -1 || msg.member.user.id == admin) {
+                msg.reply("I'm sorry");
+            } else {
+                msg.reply("no u");
+            }
+        }
+        var talkBack = /.*don't talk back to me.*/i
+        if (talkBack.test(msg.content)) {
+            msg.reply("(;¬_¬)");
+        }
         var ctrl = /.*assuming direct control.*/i
         var noCtrl = /.*giving up control.*/i
         if (msg.member.user.id == '219719949462011904') {
