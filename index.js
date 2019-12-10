@@ -93,7 +93,7 @@ client.on('message', msg => {
             }
             break;
         case ActionEnum.clear:
-            if (msg.member._roles.indexOf(GM) > -1 || msg.user.id == admin) {
+            if (msg.member._roles.indexOf(GM) > -1 || msg.member.user.id == admin) {
                 queue = [];
                 channel.send(queueToString(queue));
             } else {
@@ -101,7 +101,7 @@ client.on('message', msg => {
             }
             break;
         case ActionEnum.lowerIt:
-            if (msg.member._roles.indexOf(GM.id) > -1 || msg.user.id == admin) {
+            if (msg.member._roles.indexOf(GM.id) > -1 || msg.member.user.id == admin) {
                 var extra = msg.content.substring(3);
                 channel.send("'"+extra+"'");
             } else {
