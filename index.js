@@ -119,8 +119,8 @@ client.on('message', msg => {
             msg.reply("You're welcome.");
         }
         var ctrl = /.*assuming direct control.*/i
-        var noCtrl = /.*giveing up control.*/i
-        if (msg.user.id == '219719949462011904') {
+        var noCtrl = /.*giving up control.*/i
+        if (msg.member.user.id == '219719949462011904') {
             if (ctrl.test(msg.content)) {
                 admin = msg.member.user.id;
                 msg.reply("You now have full control");
