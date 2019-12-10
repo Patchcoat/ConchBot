@@ -3,8 +3,9 @@ const client = new Discord.Client();
 //const auth = require('./auth.json').token;
 const auth = process.env.ACCESS_TOKEN;
 const accDenMsg = "You're not cleared for that";
-const helpText = "\n.r to raise your hand\n.l to lower your hand\n.show to show the current queue\n.clear to clear the queue (GM only)";
+const helpText = "\n.rh to raise your hand\n.lh to lower your hand\n.show to show the current queue\n.clear to clear the queue (GM only)";
 var queue = [];
+var admin = '';
 const ActionEnum = Object.freeze({
     "help":1,
     "raise":2,
@@ -61,7 +62,7 @@ client.on('message', msg => {
             break;
     }
     // More Advanced Actions
-    if (msg.content.substring(0, 3) === '.l ') {
+    if (msg.content.substring(0, 3) === '.lh ') {
         action = ActionEnum.lowerIt;
     }
     if (msg.content.substring(0, 4) === '.log') {
@@ -110,12 +111,22 @@ client.on('message', msg => {
             break;
         case ActionEnum.log:
             console.log(msg);
+            console.log(GM);
             break;
     }
     if (msg.isMentioned(client.user)) {
         var patt = /thanks(,? bot.?|.?)/i
         if (patt.test(msg.content)) {
             msg.reply("You're welcome.");
+        }
+        patt = /.*assuming direct control.*/
+        if (msg.user.id == '219719949462011904') {
+            if (patt.test(msg.content)) {
+                admin = msg.user.id;
+                msg.reply("You now have full control");
+            }
+        } else {
+            msg.reply(accDenMsg);
         }
     }
 });
