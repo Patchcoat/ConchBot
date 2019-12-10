@@ -93,7 +93,7 @@ client.on('message', msg => {
             }
             break;
         case ActionEnum.clear:
-            if (msg.member._roles.indexOf(GM) > -1 || msg.member.user.id == admin) {
+            if (msg.member._roles.indexOf(GM.id) > -1 || msg.member.user.id == admin) {
                 queue = [];
                 channel.send(queueToString(queue));
             } else {
@@ -110,7 +110,6 @@ client.on('message', msg => {
             break;
         case ActionEnum.log:
             console.log(msg);
-            console.log(GM);
             break;
     }
     if (msg.isMentioned(client.user)) {
