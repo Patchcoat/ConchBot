@@ -1,9 +1,7 @@
 const Discord = require('discord.js')
 const client = new Discord.Client();
-var auth = require('./auth.json');
-if (auth === undefined) {
-    auth = process.env.ACCESS_TOKEN;
-}
+//const auth = require('./auth.json');
+const auth = process.env.ACCESS_TOKEN;
 const accDenMsg = "You're not cleared for that";
 const helpText = "\n.r to raise your hand\n.l to lower your hand\n.show to show the current queue\n.clear to clear the queue (GM only)";
 var queue = [];
