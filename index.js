@@ -45,10 +45,10 @@ client.on('message', msg => {
         case '.help':
             action = ActionEnum.help;
             break;
-        case '.r':
+        case '.rh':
             action = ActionEnum.raise;
             break;
-        case '.l':
+        case '.lh':
             action = ActionEnum.lower;
             break;
         case '.show':
