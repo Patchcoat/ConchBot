@@ -35,8 +35,7 @@ function queueToString (queue) {
 
 client.on('message', msg => {
     const channel = client.channels.get(msg.channel.id);
-    const guild = client.guilds.get(msg.member.guild.id);
-    const GM = guild.roles.find(val => val.name === "GM");
+    const GM = msg.member.guild.roles.find(val => val.name === "GM");
     let action;
     // Assign Actions
     switch(msg.content) {
@@ -94,7 +93,7 @@ client.on('message', msg => {
             }
             break;
         case ActionEnum.clear:
-            if (msg.member._roles.indexOf(GM) > -1) {
+            if (msg.member._roles.indexOf(GM) > -1 || msg.user.id == admin) {
                 queue = [];
                 channel.send(queueToString(queue));
             } else {
@@ -102,7 +101,7 @@ client.on('message', msg => {
             }
             break;
         case ActionEnum.lowerIt:
-            if (msg.member._roles.indexOf(GM.id) > -1) {
+            if (msg.member._roles.indexOf(GM.id) > -1 || msg.user.id == admin) {
                 var extra = msg.content.substring(3);
                 channel.send("'"+extra+"'");
             } else {
@@ -119,11 +118,15 @@ client.on('message', msg => {
         if (patt.test(msg.content)) {
             msg.reply("You're welcome.");
         }
-        patt = /.*assuming direct control.*/
+        var ctrl = /.*assuming direct control.*/i
+        var noCtrl = /.*giveing up control.*/i
         if (msg.user.id == '219719949462011904') {
-            if (patt.test(msg.content)) {
+            if (ctrl.test(msg.content)) {
                 admin = msg.user.id;
                 msg.reply("You now have full control");
+            } else if (noCtrl.test(msg.content)) {
+                admin = "";
+                msg.reply("You are no longer in control");
             }
         } else {
             msg.reply(accDenMsg);
