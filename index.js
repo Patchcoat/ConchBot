@@ -35,7 +35,7 @@ function queueToString (queue) {
 
 client.on('message', msg => {
     const channel = client.channels.get(msg.channel.id);
-    const GM = msg.member.guild.roles.find(val => val.name === "GM");
+    const GM = msg.guild.roles.find(val => val.name === "GM");
     let action;
     // Assign Actions
     switch(msg.content) {
